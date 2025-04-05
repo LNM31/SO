@@ -23,7 +23,7 @@ void add(char *hunt_id)
     sprintf(log_path,"%s/logged_hunt",hunt_id);
     sprintf(link_path,"logged_hunt-%s",hunt_id);
 
-    //Creaza directorul daca nu exista
+    //1. Creaza directorul daca nu exista
     struct stat st;
     if(stat(dir_path,&st)==-1) 
     {
@@ -34,7 +34,39 @@ void add(char *hunt_id)
         }
     }
 
+    //2. Colectare date din terminal
+    treasure t;
+    char buffer[256];
 
+    write(1,"Id: ",5);
+    read(0,buffer,sizeof(buffer));
+    t.id=strtol(buffer,NULL,10);
+    printf("%d-size:%ld\n",t.id,sizeof(t.id));
+
+    write(1,"Nume: ",7);
+    read(0,buffer,sizeof(buffer));
+    strcpy(t.name,buffer);
+    printf("%s-size:%ld\n",t.name,sizeof(t.name));
+
+    write(1,"Latitudine: ",13);
+    read(0,buffer,sizeof(buffer));
+    t.x=strtof(buffer,NULL);
+    printf("%f-size:%ld\n",t.x,sizeof(t.x));
+
+    write(1,"Longitudine: ",14);
+    read(0,buffer,sizeof(buffer));
+    t.y=strtof(buffer,NULL);
+    printf("%f-size:%ld\n",t.y,sizeof(t.y));
+
+    write(1,"Clue: ",7);
+    read(0,buffer,sizeof(buffer));
+    strcpy(t.clue,buffer);
+    printf("%s-size:%ld\n",t.clue,sizeof(t.clue));
+
+    write(1,"Valoare: ",10);
+    read(0,buffer,sizeof(buffer));
+    t.value=strtol(buffer,NULL,10);
+    printf("%d-size:%ld\n",t.value,sizeof(t.value));
 
 }
 int main(int argc,char **argv)
