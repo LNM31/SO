@@ -15,6 +15,28 @@ typedef struct {
     int value;
 }treasure;
 
+int safe_read_line(char *buffer, size_t size)
+{
+    int len = read(0, buffer, size - 1); // -1 ca să păstrăm loc pentru \0
+    if (len > 0) 
+    {
+        if (buffer[len - 1] == '\n') 
+        {
+            buffer[len - 1] = '\0'; // înlocuiește \n cu \0
+            len--;
+        } 
+        else 
+        {
+            buffer[len] = '\0'; // pune \0
+        }
+    }
+    else 
+    {
+        buffer[0] = '\0'; // sir gol
+    }
+    return len;
+}
+
 void add(char *hunt_id)
 {
     char dir_path[256],file_path[256],log_path[256],link_path[256];
@@ -39,34 +61,30 @@ void add(char *hunt_id)
     char buffer[256];
 
     write(1,"Id: ",5);
-    read(0,buffer,sizeof(buffer));
+    safe_read_line(buffer,sizeof(buffer));
     t.id=strtol(buffer,NULL,10);
-    printf("%d-size:%ld\n",t.id,sizeof(t.id));
 
     write(1,"Nume: ",7);
-    read(0,buffer,sizeof(buffer));
+    safe_read_line(buffer,sizeof(buffer));
     strcpy(t.name,buffer);
-    printf("%s-size:%ld\n",t.name,sizeof(t.name));
 
     write(1,"Latitudine: ",13);
-    read(0,buffer,sizeof(buffer));
+    safe_read_line(buffer,sizeof(buffer));
     t.x=strtof(buffer,NULL);
-    printf("%f-size:%ld\n",t.x,sizeof(t.x));
 
     write(1,"Longitudine: ",14);
-    read(0,buffer,sizeof(buffer));
+    safe_read_line(buffer,sizeof(buffer));
     t.y=strtof(buffer,NULL);
-    printf("%f-size:%ld\n",t.y,sizeof(t.y));
 
     write(1,"Clue: ",7);
-    read(0,buffer,sizeof(buffer));
+    safe_read_line(buffer,sizeof(buffer));
     strcpy(t.clue,buffer);
-    printf("%s-size:%ld\n",t.clue,sizeof(t.clue));
 
     write(1,"Valoare: ",10);
-    read(0,buffer,sizeof(buffer));
+    safe_read_line(buffer,sizeof(buffer));
     t.value=strtol(buffer,NULL,10);
-    printf("%d-size:%ld\n",t.value,sizeof(t.value));
+
+    printf("%d,%s,%f,%f,%s,%d;\n",t.id,t.name,t.x,t.y,t.clue,t.value);
 
 }
 int main(int argc,char **argv)
