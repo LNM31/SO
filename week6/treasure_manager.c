@@ -383,6 +383,55 @@ void remove_treasure(const char *hunt_id,int id)
 
      write(1,"Stergera a fost efectuata cu succes!\n",38);
 }
+
+void remove_hunt(const char *hunt_id)
+{
+    char file_path[256],log_path[256],link_path[256];
+    sprintf(file_path,"%s/treasures.dat",hunt_id);
+    sprintf(log_path,"%s/logged_hunt",hunt_id);
+    sprintf(link_path,"logged_hunt-%s",hunt_id);
+
+    struct stat info;
+    //1. Verificare existenta a fisierelor/directoarelor coresp. hunt-ului
+    if(stat(hunt_id,&info)!=0 || S_ISDIR(info.st_mode)==0)
+     {
+        perror("Nu exista directorul sau nu este valid!");
+        exit(-2);
+     }
+     
+
+     if(stat(file_path,&info)==0 && S_ISREG(info.st_mode)!=0)
+     {
+        if(remove(file_path)!=0)
+        {
+            perror("Eroare stergere fisier treasure.dat");
+        }
+     }
+     
+     if(lstat(link_path,&info)==0 && S_ISLNK(info.st_mode)!=0)
+     {
+        if(remove(link_path)!=0)
+        {
+            perror("Eroare stergere fisier link-symbolic");
+        }
+     }
+
+     if(stat(log_path,&info)==0 && S_ISREG(info.st_mode)!=0)
+     {
+        if(remove(log_path)!=0)
+        {
+            perror("Eroare stergere fisier logged_hunt");
+        }
+     }
+
+     if(remove(hunt_id)!=0)
+     {
+        perror("Eroare stergere director hunt!");
+        exit(-2);
+     }
+    
+     write(1,"Stergerea hunt-ului s-a realizat cu succes.\n",45);
+}
 int main(int argc,char **argv)
 {
     if(argc==3)
@@ -394,6 +443,10 @@ int main(int argc,char **argv)
         else if(strcmp(argv[1],"list")==0)
         {
             list(argv[2]);
+        }
+        else if(strcmp(argv[1],"remove_hunt")==0)
+        {
+            remove_hunt(argv[2]);
         }
         else
         {
