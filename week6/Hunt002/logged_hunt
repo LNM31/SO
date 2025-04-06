@@ -3,3 +3,7 @@ ADD: ID=2 Name_User=Nume2 Latitude=2.22 Longitude=2.02 Clue="Acesta este clue2" 
 ADD: ID=3 Name_User=Nume3 Latitude=3.33 Longitude=3.03 Clue="Acesta este clue3" Value=300
 LIST: All treasures listed from Hunt - Hunt002
 LIST: All treasures listed from Hunt - Hunt002
+VIEW: Treasure with the ID:1 was viewed
+VIEW: Treasure with the ID:2 was viewed
+VIEW: Treasure with the ID:2 was viewed
+VIEW: Treasure with the ID:3 was viewed

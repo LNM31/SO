@@ -2,3 +2,6 @@ ADD: ID=1 Name_User=Nume1 Latitude=1.11 Longitude=1.01 Clue="Acesta este clue11"
 LIST: All treasures listed from Hunt - Hunt003
 LIST: All treasures listed from Hunt - Hunt003
 LIST: All treasures listed from Hunt - Hunt003
+VIEW: Treasure with the ID:1 was viewed
+VIEW: Treasure with the ID:1 was viewed
+VIEW: Treasure with the ID:1 was viewed

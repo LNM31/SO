@@ -228,6 +228,73 @@ void list(char *hunt_id)
      log_operation(log_path,log_message);
 
 }
+
+void view(const char *hunt_id,int id)
+{
+    char file_path[256];
+     sprintf(file_path,"%s/treasures.dat",hunt_id);
+
+     struct stat info;
+     //1.Verificare existenta director
+     if(stat(hunt_id,&info)!=0)
+     {
+        perror("❌Nu exista calea catre acest director!");
+        exit(-2);
+     }
+     else if(S_ISDIR(info.st_mode)==0)
+     {
+        perror("❌Nu este un director");
+        exit(-1);
+     }
+
+     //2.Deschidere fisier treasure.dat
+     int fd=open(file_path,O_RDONLY);
+     if(fd==-1)
+     {
+        perror("❌Nu s a putut deschide fisierul sau nu exista!");
+        exit(-1);
+     }
+
+     //3.Citire
+     treasure t;
+     ssize_t bytes;
+     int found=0;
+     while((bytes=read(fd,&t,sizeof(treasure)))==sizeof(treasure))
+     {
+        if(t.id==id)
+        {
+            found=1;
+            break;
+        }
+     }
+     if(found==1)
+     {
+        display_treasure(&t);
+     }
+     else
+     {
+        write(1,"❌Nu s-a gasit!\n",17);
+        if(close(fd)!=0)
+            {
+                perror("❌Eroare inchidere fisier");
+                exit(-1);
+            }
+        return;
+     }
+
+     if(close(fd)!=0)
+     {
+        perror("❌Eroare inchidere fisier");
+        exit(-1);
+     }
+
+     //4.Actualizarea logged_hunt-ului
+     char log_path[256],log_message[256];
+     sprintf(log_path,"%s/logged_hunt",hunt_id);
+     sprintf(log_message,"VIEW: Treasure with the ID:%d was viewed\n",id);
+     log_operation(log_path,log_message);
+
+}
 int main(int argc,char **argv)
 {
     if(argc==3)
@@ -239,6 +306,18 @@ int main(int argc,char **argv)
         else if(strcmp(argv[1],"list")==0)
         {
             list(argv[2]);
+        }
+        else
+        {
+            perror("❌Invalid Arguments");
+            exit(-2);
+        }
+    }
+    else if(argc==4)
+    {
+        if(strcmp(argv[1],"view")==0)
+        {
+            view(argv[2],strtol(argv[3],NULL,10));
         }
         else
         {
