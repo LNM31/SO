@@ -1,11 +1,11 @@
-#include <stdio.h>      // pentru printf, scanf, perror
-#include <stdlib.h>     // pentru exit, malloc (dacă vei folosi)
-#include <string.h>     // pentru strcpy, strcmp, fgets, strcspn
-#include <fcntl.h>      // open, O_CREAT, O_WRONLY etc.
-#include <unistd.h>     // close, read, write, lseek, unlink, rmdir
-#include <sys/stat.h>   // mkdir, stat, lstat, struct stat
-#include <dirent.h>     // manipularea directoarelor (dacă vei citi conținutul)
-#include <time.h>       // pentru afișarea timpului ultimei modificări (cu stat)
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <time.h>
 
 typedef struct {
     int id;
@@ -145,18 +145,104 @@ void add(char *hunt_id)
 
     write(1,"✅ Comoara a fost adaugata cu succes!\n",39);
 }
+
+void display_treasure(const treasure *t)
+{
+    char str[512];
+    sprintf(str,"ID:%d,User_Name:%s,Lat:%f,Long:%f,Clue:%s,Value:%d;\n",t->id,t->name,t->x,t->y,t->clue,t->value);
+    write(1,str,strlen(str));
+}
+void list(char *hunt_id)
+{
+     char file_path[256];
+     sprintf(file_path,"%s/treasures.dat",hunt_id);
+
+     struct stat info;
+     //1.Verificare existenta director
+     if(stat(hunt_id,&info)!=0)
+     {
+        perror("❌Nu exista calea catre acest director!");
+        exit(-2);
+     }
+     else if(S_ISDIR(info.st_mode)==0)
+     {
+        perror("❌Nu este un director");
+        exit(-1);
+     }
+
+     //2.Nume
+     write(1,"Hunt Name: ",11);
+     write(1,hunt_id,strlen(hunt_id));
+
+     //3.Verificare existenta treasure.dat 
+     if(stat(file_path,&info)!=0)
+     {
+        perror("❌Nu exista fisierul!");
+        exit(-1);
+     }
+     else if(S_ISREG(info.st_mode)==0)
+     {
+        perror("❌Nu este fisier regular!");
+        exit(-1);
+     }
+
+     //4.Total size
+     char total_size[128];
+     sprintf(total_size,"\nTotal size in bytes: %ld\n",info.st_size);
+     write(1,total_size,strlen(total_size));
+
+     //5.Last modification
+     char last_modification[128];
+     sprintf(last_modification,"Last modification : %s",ctime(&info.st_mtime));
+     write(1,last_modification,strlen(last_modification));
+
+     //6.List of treasures
+     treasure t;
+     int fd=open(file_path,O_RDONLY);
+     if(fd==-1)
+     {
+        perror("❌Eroare deschidere fisier");
+        exit(-1);
+     }
+     ssize_t bytes_read;
+     while((bytes_read=read(fd,&t,sizeof(treasure))) == sizeof(treasure))
+     {
+        display_treasure(&t);
+     }
+     
+     if(bytes_read!=0)
+     {
+        perror("❌An error ocurred at reading treasures!");
+     }
+
+     if(close(fd)!=0)
+     {
+        perror("❌Error at closing file");
+        exit(-1);
+     }
+
+     //7.Actualizarea logged_hunt-ului
+     char log_path[256],log_message[256];
+     sprintf(log_path,"%s/logged_hunt",hunt_id);
+     sprintf(log_message,"LIST: All treasures listed from Hunt - %s\n",hunt_id);
+     log_operation(log_path,log_message);
+
+}
 int main(int argc,char **argv)
 {
-    printf("Hello world!\n");
     if(argc==3)
     {
         if(strcmp(argv[1],"add")==0)
         {
             add(argv[2]);
         }
+        else if(strcmp(argv[1],"list")==0)
+        {
+            list(argv[2]);
+        }
         else
         {
-            perror("Argument invalid");
+            perror("❌Invalid Arguments");
             exit(-2);
         }
     }
