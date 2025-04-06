@@ -7,3 +7,10 @@ VIEW: Treasure with the ID:1 was viewed
 VIEW: Treasure with the ID:2 was viewed
 VIEW: Treasure with the ID:2 was viewed
 VIEW: Treasure with the ID:3 was viewed
+ADD: ID=4 Name_User=Nume4 Latitude=4.44 Longitude=4.04 Clue="Acesta este clue4 de la Hunt002" Value=400
+REMOVE_TREASURE: Treasure with the ID:3 was removed
+LIST: All treasures listed from Hunt - Hunt002
+ADD: ID=3 Name_User=Nume3 Latitude=3.33 Longitude=3.00 Clue="clue3" Value=3000
+LIST: All treasures listed from Hunt - Hunt002
+REMOVE_TREASURE: Treasure with the ID:4 was removed
+LIST: All treasures listed from Hunt - Hunt002

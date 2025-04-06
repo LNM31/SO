@@ -5,3 +5,8 @@ LIST: All treasures listed from Hunt - Hunt003
 VIEW: Treasure with the ID:1 was viewed
 VIEW: Treasure with the ID:1 was viewed
 VIEW: Treasure with the ID:1 was viewed
+ADD: ID=3 Name_User=Nume3 Latitude=3.33 Longitude=3.00 Clue="Acesta este clue3 de la Hunt3" Value=303
+LIST: All treasures listed from Hunt - Hunt003
+LIST: All treasures listed from Hunt - Hunt003
+REMOVE_TREASURE: Treasure with the ID:1 was removed
+LIST: All treasures listed from Hunt - Hunt003

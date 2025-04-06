@@ -143,7 +143,7 @@ void add(char *hunt_id)
         }
     }
 
-    write(1,"✅ Comoara a fost adaugata cu succes!\n",39);
+    write(1,"Comoara a fost adaugata cu succes!\n",36);
 }
 
 void display_treasure(const treasure *t)
@@ -161,12 +161,12 @@ void list(char *hunt_id)
      //1.Verificare existenta director
      if(stat(hunt_id,&info)!=0)
      {
-        perror("❌Nu exista calea catre acest director!");
+        perror("Nu exista calea catre acest director!");
         exit(-2);
      }
      else if(S_ISDIR(info.st_mode)==0)
      {
-        perror("❌Nu este un director");
+        perror("Nu este un director");
         exit(-1);
      }
 
@@ -177,12 +177,12 @@ void list(char *hunt_id)
      //3.Verificare existenta treasure.dat 
      if(stat(file_path,&info)!=0)
      {
-        perror("❌Nu exista fisierul!");
+        perror("Nu exista fisierul!");
         exit(-1);
      }
      else if(S_ISREG(info.st_mode)==0)
      {
-        perror("❌Nu este fisier regular!");
+        perror("Nu este fisier regular!");
         exit(-1);
      }
 
@@ -201,7 +201,7 @@ void list(char *hunt_id)
      int fd=open(file_path,O_RDONLY);
      if(fd==-1)
      {
-        perror("❌Eroare deschidere fisier");
+        perror("Eroare deschidere fisier");
         exit(-1);
      }
      ssize_t bytes_read;
@@ -212,12 +212,12 @@ void list(char *hunt_id)
      
      if(bytes_read!=0)
      {
-        perror("❌An error ocurred at reading treasures!");
+        perror("An error ocurred at reading treasures!");
      }
 
      if(close(fd)!=0)
      {
-        perror("❌Error at closing file");
+        perror("Error at closing file");
         exit(-1);
      }
 
@@ -238,12 +238,12 @@ void view(const char *hunt_id,int id)
      //1.Verificare existenta director
      if(stat(hunt_id,&info)!=0)
      {
-        perror("❌Nu exista calea catre acest director!");
+        perror("Nu exista calea catre acest director!");
         exit(-2);
      }
      else if(S_ISDIR(info.st_mode)==0)
      {
-        perror("❌Nu este un director");
+        perror("Nu este un director");
         exit(-1);
      }
 
@@ -251,7 +251,7 @@ void view(const char *hunt_id,int id)
      int fd=open(file_path,O_RDONLY);
      if(fd==-1)
      {
-        perror("❌Nu s a putut deschide fisierul sau nu exista!");
+        perror("Nu s a putut deschide fisierul sau nu exista!");
         exit(-1);
      }
 
@@ -273,10 +273,10 @@ void view(const char *hunt_id,int id)
      }
      else
      {
-        write(1,"❌Nu s-a gasit!\n",17);
+        write(1,"Nu s-a gasit!\n",15);
         if(close(fd)!=0)
             {
-                perror("❌Eroare inchidere fisier");
+                perror("Eroare inchidere fisier");
                 exit(-1);
             }
         return;
@@ -284,7 +284,7 @@ void view(const char *hunt_id,int id)
 
      if(close(fd)!=0)
      {
-        perror("❌Eroare inchidere fisier");
+        perror("Eroare inchidere fisier");
         exit(-1);
      }
 
@@ -294,6 +294,94 @@ void view(const char *hunt_id,int id)
      sprintf(log_message,"VIEW: Treasure with the ID:%d was viewed\n",id);
      log_operation(log_path,log_message);
 
+}
+
+void remove_treasure(const char *hunt_id,int id)
+{
+    char file_path[256],temp_file[256];
+    sprintf(file_path,"%s/treasures.dat",hunt_id);
+    sprintf(temp_file,"%s/temp.dat",hunt_id);
+
+    //1. Verificare existenta director
+    struct stat info;
+    if(stat(hunt_id,&info)!=0)
+     {
+        perror("Nu exista calea catre acest director!");
+        exit(-2);
+     }
+     else if(S_ISDIR(info.st_mode)==0)
+     {
+        perror("Nu este un director");
+        exit(-1);
+     }
+
+     //2. Deschidere fisier treasure
+     int fd=open(file_path,O_RDONLY);
+     if(fd==-1)
+     {
+        perror("Fisierul nu exista sau nu poate fi deschis");
+        exit(-1);
+     }
+
+     //3. Crearea unui nou fisier in care punem toate comorile mai putin cea cu ID-ul dat ca parametru
+     int fd_out=open(temp_file,O_WRONLY | O_CREAT | O_TRUNC,0777);
+     if(fd_out==-1)
+     {
+        perror("An error has ocurred!");
+        exit(-2);
+     }
+
+     treasure t;
+     int found=0;
+     ssize_t bytes;
+     while((bytes=read(fd,&t,sizeof(treasure)))==sizeof(treasure))
+     {
+        if(t.id==id)
+        {
+            found=1;
+            continue;
+        }
+        write(fd_out,&t,sizeof(treasure));
+     }
+     if(bytes!=0)
+     {
+        perror("An error has ocurred at reading!");
+        exit(-2);
+     }
+
+     if(close(fd)!=0 || close(fd_out)!=0)
+     {
+        perror("Eroare inchidere fisire");
+        exit(-2);
+     }
+
+     //4. Inlocuire fisire
+     if(found==1)
+     {
+        if(remove(file_path)!=0 || rename(temp_file,file_path)!=0)
+        {
+            perror("Nu s-a putut face stergerea!");
+            exit(-2);
+        }
+     }
+     else
+     {
+        if(remove(temp_file)!=0)
+        {
+            perror("An error has ocurred!");
+            exit(-2);
+        }
+        write(1,"Comoara nu a fost gasita!\n",27);
+        return ;
+     }
+
+     //4.Actualizarea logged_hunt-ului
+     char log_path[256],log_message[256];
+     sprintf(log_path,"%s/logged_hunt",hunt_id);
+     sprintf(log_message,"REMOVE_TREASURE: Treasure with the ID:%d was removed\n",id);
+     log_operation(log_path,log_message);
+
+     write(1,"Stergera a fost efectuata cu succes!\n",38);
 }
 int main(int argc,char **argv)
 {
@@ -309,7 +397,7 @@ int main(int argc,char **argv)
         }
         else
         {
-            perror("❌Invalid Arguments");
+            perror("Invalid Arguments");
             exit(-2);
         }
     }
@@ -319,9 +407,13 @@ int main(int argc,char **argv)
         {
             view(argv[2],strtol(argv[3],NULL,10));
         }
+        else if(strcmp(argv[1],"remove_treasure")==0)
+        {
+            remove_treasure(argv[2],strtol(argv[3],NULL,10));
+        }
         else
         {
-            perror("❌Invalid Arguments");
+            perror("Invalid Arguments");
             exit(-2);
         }
     }
