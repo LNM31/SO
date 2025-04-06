@@ -105,7 +105,7 @@ void add(char *hunt_id)
 
     //printf("%d,%s,%f,%f,%s,%d;\n",t.id,t.name,t.x,t.y,t.clue,t.value);
 
-    //3.scriere in fisier
+    //3.Deschide in fisier sau il creaza daca nu exista
     int fd=open(file_path,O_WRONLY | O_APPEND | O_CREAT, 0777);
     if(fd==-1)
     {
