@@ -77,31 +77,59 @@ void add(char *hunt_id)
 
     //2. Colectare date din terminal
     treasure t;
-    char buffer[256];
+    char buffer[256],*endptr;
 
-    write(1,"Id: ",5);
-    safe_read_line(buffer,sizeof(buffer));
-    t.id=strtol(buffer,NULL,10);
-
+    do
+    {
+        write(1,"Id: ",5);
+        safe_read_line(buffer,sizeof(buffer));
+        t.id=strtol(buffer,&endptr,10);
+        if(buffer[0]=='\0' || *endptr !=0 || t.id<0)
+        {
+            write(1,"ID-ul nu este valid!\n",22);
+        }
+    } while (buffer[0]=='\0' || *endptr !=0 || t.id<0);
+    
     write(1,"Nume: ",7);
     safe_read_line(buffer,sizeof(buffer));
     strcpy(t.name,buffer);
 
-    write(1,"Latitudine: ",13);
-    safe_read_line(buffer,sizeof(buffer));
-    t.x=strtof(buffer,NULL);
+    do
+    {
+        write(1,"Latitudine: ",13);
+        safe_read_line(buffer,sizeof(buffer));
+        t.x=strtof(buffer,&endptr);
+        if(buffer[0]=='\0' || *endptr !=0)
+        {
+            write(1,"Latitudinea nu este valida!\n",29);
+        }
+    } while (buffer[0]=='\0' || *endptr !=0);
 
-    write(1,"Longitudine: ",14);
-    safe_read_line(buffer,sizeof(buffer));
-    t.y=strtof(buffer,NULL);
-
+    do
+    {
+        write(1,"Longitudine: ",14);
+        safe_read_line(buffer,sizeof(buffer));
+        t.y=strtof(buffer,&endptr);
+        if(buffer[0]=='\0' || *endptr !=0)
+        {
+            write(1,"Longitudinea nu este valida!\n",29);
+        }
+    } while (buffer[0]=='\0' || *endptr !=0);
+    
     write(1,"Clue: ",7);
     safe_read_line(buffer,sizeof(buffer));
     strcpy(t.clue,buffer);
 
-    write(1,"Valoare: ",10);
-    safe_read_line(buffer,sizeof(buffer));
-    t.value=strtol(buffer,NULL,10);
+    do
+    {
+        write(1,"Valoare: ",10);
+        safe_read_line(buffer,sizeof(buffer));
+        t.value=strtol(buffer,&endptr,10);
+        if(buffer[0]=='\0' || *endptr !=0)
+        {
+            write(1,"Valoarea nu este valida!\n",26);
+        }
+    } while (buffer[0]=='\0' || *endptr !=0);
 
     //printf("%d,%s,%f,%f,%s,%d;\n",t.id,t.name,t.x,t.y,t.clue,t.value);
 
@@ -432,8 +460,14 @@ void remove_hunt(const char *hunt_id)
     
      write(1,"Stergerea hunt-ului s-a realizat cu succes.\n",45);
 }
+void test_citire()
+{
+    
+    
+}
 int main(int argc,char **argv)
 {
+    test_citire();
     if(argc==3)
     {
         if(strcmp(argv[1],"add")==0)
