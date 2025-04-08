@@ -59,10 +59,10 @@ void log_operation(const char * log_path,const char * what_to_write)
 void add(char *hunt_id)
 {
     char dir_path[256],file_path[256],log_path[256],link_path[256];
-    sprintf(dir_path,"%s",hunt_id);
-    sprintf(file_path,"%s/treasures.dat",hunt_id);
-    sprintf(log_path,"%s/logged_hunt",hunt_id);
-    sprintf(link_path,"logged_hunt-%s",hunt_id);
+    snprintf(dir_path,sizeof(dir_path),"%s",hunt_id);
+    snprintf(file_path,sizeof(file_path),"%s/treasures.dat",hunt_id);
+    snprintf(log_path,sizeof(log_path),"%s/logged_hunt",hunt_id);
+    snprintf(link_path,sizeof(link_path),"logged_hunt-%s",hunt_id);
 
     //1. Creaza directorul daca nu exista
     struct stat st;
@@ -130,7 +130,7 @@ void add(char *hunt_id)
 
     //5. Scriere in logged_hunt
     char log[512];
-    sprintf(log,"ADD: ID=%d Name_User=%s Latitude=%.2f Longitude=%.2f Clue=\"%s\" Value=%d\n",t.id,t.name,t.x,t.y,t.clue,t.value);
+    snprintf(log,sizeof(log),"ADD: ID=%d Name_User=%s Latitude=%.2f Longitude=%.2f Clue=\"%s\" Value=%d\n",t.id,t.name,t.x,t.y,t.clue,t.value);
     log_operation(log_path,log);
 
     //6. creare symlimk in caz ca nu exista deja
@@ -149,13 +149,13 @@ void add(char *hunt_id)
 void display_treasure(const treasure *t)
 {
     char str[512];
-    sprintf(str,"ID:%d,User_Name:%s,Lat:%f,Long:%f,Clue:%s,Value:%d;\n",t->id,t->name,t->x,t->y,t->clue,t->value);
+    snprintf(str,sizeof(str),"ID:%d,User_Name:%s,Lat:%f,Long:%f,Clue:%s,Value:%d;\n",t->id,t->name,t->x,t->y,t->clue,t->value);
     write(1,str,strlen(str));
 }
 void list(char *hunt_id)
 {
      char file_path[256];
-     sprintf(file_path,"%s/treasures.dat",hunt_id);
+     snprintf(file_path,sizeof(file_path),"%s/treasures.dat",hunt_id);
 
      struct stat info;
      //1.Verificare existenta director
@@ -188,12 +188,12 @@ void list(char *hunt_id)
 
      //4.Total size
      char total_size[128];
-     sprintf(total_size,"\nTotal size in bytes: %ld\n",info.st_size);
+     snprintf(total_size,sizeof(total_size),"\nTotal size in bytes: %ld\n",info.st_size);
      write(1,total_size,strlen(total_size));
 
      //5.Last modification
      char last_modification[128];
-     sprintf(last_modification,"Last modification : %s",ctime(&info.st_mtime));
+     snprintf(last_modification,sizeof(last_modification),"Last modification : %s",ctime(&info.st_mtime));
      write(1,last_modification,strlen(last_modification));
 
      //6.List of treasures
@@ -223,8 +223,8 @@ void list(char *hunt_id)
 
      //7.Actualizarea logged_hunt-ului
      char log_path[256],log_message[256];
-     sprintf(log_path,"%s/logged_hunt",hunt_id);
-     sprintf(log_message,"LIST: All treasures listed from Hunt - %s\n",hunt_id);
+     snprintf(log_path,sizeof(log_path),"%s/logged_hunt",hunt_id);
+     snprintf(log_message,sizeof(log_message),"LIST: All treasures listed from Hunt - %s\n",hunt_id);
      log_operation(log_path,log_message);
 
 }
@@ -232,7 +232,7 @@ void list(char *hunt_id)
 void view(const char *hunt_id,int id)
 {
     char file_path[256];
-     sprintf(file_path,"%s/treasures.dat",hunt_id);
+     snprintf(file_path,sizeof(file_path),"%s/treasures.dat",hunt_id);
 
      struct stat info;
      //1.Verificare existenta director
@@ -290,8 +290,8 @@ void view(const char *hunt_id,int id)
 
      //4.Actualizarea logged_hunt-ului
      char log_path[256],log_message[256];
-     sprintf(log_path,"%s/logged_hunt",hunt_id);
-     sprintf(log_message,"VIEW: Treasure with the ID:%d was viewed\n",id);
+     snprintf(log_path,sizeof(log_path),"%s/logged_hunt",hunt_id);
+     snprintf(log_message,sizeof(log_message),"VIEW: Treasure with the ID:%d was viewed\n",id);
      log_operation(log_path,log_message);
 
 }
@@ -299,8 +299,8 @@ void view(const char *hunt_id,int id)
 void remove_treasure(const char *hunt_id,int id)
 {
     char file_path[256],temp_file[256];
-    sprintf(file_path,"%s/treasures.dat",hunt_id);
-    sprintf(temp_file,"%s/temp.dat",hunt_id);
+    snprintf(file_path,sizeof(file_path),"%s/treasures.dat",hunt_id);
+    snprintf(temp_file,sizeof(temp_file),"%s/temp.dat",hunt_id);
 
     //1. Verificare existenta director
     struct stat info;
@@ -377,8 +377,8 @@ void remove_treasure(const char *hunt_id,int id)
 
      //4.Actualizarea logged_hunt-ului
      char log_path[256],log_message[256];
-     sprintf(log_path,"%s/logged_hunt",hunt_id);
-     sprintf(log_message,"REMOVE_TREASURE: Treasure with the ID:%d was removed\n",id);
+     snprintf(log_path,sizeof(log_path),"%s/logged_hunt",hunt_id);
+     snprintf(log_message,sizeof(log_message),"REMOVE_TREASURE: Treasure with the ID:%d was removed\n",id);
      log_operation(log_path,log_message);
 
      write(1,"Stergera a fost efectuata cu succes!\n",38);
@@ -387,9 +387,9 @@ void remove_treasure(const char *hunt_id,int id)
 void remove_hunt(const char *hunt_id)
 {
     char file_path[256],log_path[256],link_path[256];
-    sprintf(file_path,"%s/treasures.dat",hunt_id);
-    sprintf(log_path,"%s/logged_hunt",hunt_id);
-    sprintf(link_path,"logged_hunt-%s",hunt_id);
+    snprintf(file_path,sizeof(file_path),"%s/treasures.dat",hunt_id);
+    snprintf(log_path,sizeof(log_path),"%s/logged_hunt",hunt_id);
+    snprintf(link_path,sizeof(link_path),"logged_hunt-%s",hunt_id);
 
     struct stat info;
     //1. Verificare existenta a fisierelor/directoarelor coresp. hunt-ului
