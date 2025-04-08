@@ -1,8 +1,8 @@
-ADD: ID=1 Name_User=Nume1 Latitude=1.11 Longitude=1.01 Clue="Acesta este clue1" Value=100
-ADD: ID=2 Name_User=Nume2 Latitude=2.22 Longitude=2.02 Clue="Acesta este clue2" Value=200
+ADD: ID=1 Name_User=Nume1 Latitude=1.11 Longitude=1.01 Clue="Acesta este clue 1 din Hunt001" Value=100
+ADD: ID=2 Name_User=Nume2 Latitude=2.22 Longitude=2.02 Clue="Acesta este clue 2 din Hunt001" Value=200
 LIST: All treasures listed from Hunt - Hunt001
 LIST: All treasures listed from Hunt - Hunt001
 LIST: All treasures listed from Hunt - Hunt001
 VIEW: Treasure with the ID:1 was viewed
 VIEW: Treasure with the ID:1 was viewed
-VIEW: Treasure with the ID:2 was viewed
+VIEW: Treasure with the ID:1 was viewed
