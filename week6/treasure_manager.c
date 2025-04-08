@@ -460,11 +460,7 @@ void remove_hunt(const char *hunt_id)
     
      write(1,"Stergerea hunt-ului s-a realizat cu succes.\n",45);
 }
-void test_citire()
-{
-    
-    
-}
+
 int main(int argc,char **argv)
 {
     test_citire();
