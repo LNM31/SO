@@ -463,7 +463,6 @@ void remove_hunt(const char *hunt_id)
 
 int main(int argc,char **argv)
 {
-    test_citire();
     if(argc==3)
     {
         if(strcmp(argv[1],"add")==0)
