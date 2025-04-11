@@ -75,12 +75,22 @@ void add(char *hunt_id)
         }
     }
 
-    //2. Colectare date din terminal
-    treasure t;
-    char buffer[256],*endptr;
+    //2.Deschide in fisier sau il creaza daca nu exista
+    int fd=open(file_path,O_RDWR | O_APPEND | O_CREAT, 0777);
+    if(fd==-1)
+    {
+        perror("Eroare fisier treasure.dat");
+        exit(-2);
+    }
 
+    //3. Colectare date din terminal
+    treasure t,aux;
+    char buffer[256],*endptr;
+    ssize_t bytes;
+    int found;
     do
     {
+        found=0;
         write(1,"Id: ",5);
         safe_read_line(buffer,sizeof(buffer));
         t.id=strtol(buffer,&endptr,10);
@@ -88,7 +98,23 @@ void add(char *hunt_id)
         {
             write(1,"ID-ul nu este valid!\n",22);
         }
-    } while (buffer[0]=='\0' || *endptr !=0 || t.id<0);
+        else
+        {
+            lseek(fd, 0, SEEK_SET);
+            while((bytes=read(fd,&aux,sizeof(treasure)))==sizeof(treasure))
+            {
+                if(t.id==aux.id)
+                {
+                    found=1;
+                    break;
+                }    
+            }
+            if(found==1)
+            {
+                write(1,"Exista deja acest ID. Introduceti altul!\n",42);
+            }
+        }
+    } while (buffer[0]=='\0' || *endptr !=0 || t.id<0 || found==1);
     
     write(1,"Nume: ",7);
     safe_read_line(buffer,sizeof(buffer));
@@ -131,18 +157,8 @@ void add(char *hunt_id)
         }
     } while (buffer[0]=='\0' || *endptr !=0);
 
-    //printf("%d,%s,%f,%f,%s,%d;\n",t.id,t.name,t.x,t.y,t.clue,t.value);
-
-    //3.Deschide in fisier sau il creaza daca nu exista
-    int fd=open(file_path,O_WRONLY | O_APPEND | O_CREAT, 0777);
-    if(fd==-1)
-    {
-        perror("Eroare fisier treasure.dat");
-        exit(-2);
-    }
-
     //4. Scriere comoara in fisier binar
-    ssize_t bytes=write(fd,&t,sizeof(treasure));
+    bytes=write(fd,&t,sizeof(treasure));
     if(bytes!=sizeof(treasure))
     {
         perror("Eroare write");

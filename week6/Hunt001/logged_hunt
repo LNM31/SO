@@ -1,8 +1,13 @@
-ADD: ID=1 Name_User=Nume1 Latitude=1.11 Longitude=1.01 Clue="Acesta este clue 1 din Hunt001" Value=100
-ADD: ID=2 Name_User=Nume2 Latitude=2.22 Longitude=2.02 Clue="Acesta este clue 2 din Hunt001" Value=200
-LIST: All treasures listed from Hunt - Hunt001
-LIST: All treasures listed from Hunt - Hunt001
+ADD: ID=1 Name_User=Nume1 Latitude=1.11 Longitude=1.01 Clue="Clue 1" Value=100
+ADD: ID=2 Name_User=Nume2 Latitude=2.22 Longitude=2.02 Clue="Clue 2" Value=200
 LIST: All treasures listed from Hunt - Hunt001
 VIEW: Treasure with the ID:1 was viewed
-VIEW: Treasure with the ID:1 was viewed
-VIEW: Treasure with the ID:1 was viewed
+VIEW: Treasure with the ID:2 was viewed
+ADD: ID=3 Name_User=Nume3 Latitude=3.33 Longitude=3.00 Clue="Clue 3" Value=300
+VIEW: Treasure with the ID:3 was viewed
+LIST: All treasures listed from Hunt - Hunt001
+ADD: ID=4 Name_User=Nume4 Latitude=4.44 Longitude=4.04 Clue="Clue 4" Value=400
+LIST: All treasures listed from Hunt - Hunt001
+VIEW: Treasure with the ID:4 was viewed
+REMOVE_TREASURE: Treasure with the ID:3 was removed
+LIST: All treasures listed from Hunt - Hunt001
