@@ -205,7 +205,7 @@ void list(char *hunt_id)
      //1.Verificare existenta director
      if(stat(hunt_id,&info)!=0)
      {
-        perror("Nu exista calea catre acest director!");
+        perror("Nu exista acest Hunt!");
         exit(-2);
      }
      else if(S_ISDIR(info.st_mode)==0)
@@ -282,7 +282,7 @@ void view(const char *hunt_id,int id)
      //1.Verificare existenta director
      if(stat(hunt_id,&info)!=0)
      {
-        perror("Nu exista calea catre acest director!");
+        perror("Nu exista acest Hunt!");
         exit(-2);
      }
      else if(S_ISDIR(info.st_mode)==0)
@@ -350,7 +350,7 @@ void remove_treasure(const char *hunt_id,int id)
     struct stat info;
     if(stat(hunt_id,&info)!=0)
      {
-        perror("Nu exista calea catre acest director!");
+        perror("Nu exista acest Hunt!");
         exit(-2);
      }
      else if(S_ISDIR(info.st_mode)==0)
